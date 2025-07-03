@@ -306,14 +306,14 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     const resources = [
-        { id: 1, type: 'dataset', title: 'TACO', description: 'Large dataset for trash annotations in various contexts, both terrestrial and coastal. Includes segmentation.', env: 'Coastal' },
-        { id: 2, type: 'dataset', title: 'Trash-ICRA19', description: 'Underwater imagery with bounding boxes for trash, ROVs, and biological objects.', env: 'Underwater' },
-        { id: 3, type: 'project', title: 'DebrisScan', description: 'An end-to-end system using EfficientDet with a REST API and Dockerized deployment. Great MLOps model.' },
-        { id: 4, type: 'dataset', title: 'Seaclear Marine Debris', description: 'Extensive underwater dataset with segmentation for 40 categories of litter and marine life.', env: 'Underwater' },
-        { id: 5, type: 'project', title: 'Trash_Track', description: 'Uses zero-shot models like Grounding DINO to detect trash without specific training labels. Highly flexible.' },
-        { id: 6, type: 'project', title: 'Underwater Waste Detection', description: 'Combines YOLOv8 with image enhancement techniques (Dark Channel Prior) to improve performance in challenging underwater conditions.' },
-        { id: 7, type: 'dataset', title: 'MARIDA', description: 'Satellite imagery (Sentinel-2) with pixel-level segmentation for large-scale marine debris.', env: 'Satellite' },
-        { id: 8, type: 'dataset', title: 'UAVVaste', description: 'Aerial drone imagery for waste detection, providing a top-down perspective.', env: 'Aerial' }
+        { id: 1, type: 'dataset', title: 'TACO', url: 'https://github.com/pedropro/TACO', description: 'Large dataset for trash annotations in various contexts, both terrestrial and coastal. Includes segmentation.', env: 'Coastal' },
+        { id: 2, type: 'dataset', title: 'Trash-ICRA19', url: 'https://irvlab.cs.umn.edu/resources/trash-icra19', description: 'Underwater imagery with bounding boxes for trash, ROVs, and biological objects.', env: 'Underwater' },
+        { id: 3, type: 'project', title: 'DebrisScan', url: 'https://github.com/orbtl-ai/DebrisScan', description: 'An end-to-end system using EfficientDet with a REST API and Dockerized deployment. Great MLOps model.' },
+        { id: 4, type: 'dataset', title: 'Seaclear Marine Debris', url: 'https://github.com/adjuras/seaclear-dataset', description: 'Extensive underwater dataset with segmentation for 40 categories of litter and marine life.', env: 'Underwater' },
+        { id: 5, type: 'project', title: 'Trash_Track', url: 'https://github.com/Tahiya31/Trash_Track', description: 'Uses zero-shot models like Grounding DINO to detect trash without specific training labels. Highly flexible.' },
+        { id: 6, type: 'project', title: 'Underwater Waste Detection', url: 'https://github.com/ShivamVadalia/Underwater-Waste-Detection-Using-YoloV8-And-Water-Quality-Assessment', description: 'Combines YOLOv8 with image enhancement techniques (Dark Channel Prior) to improve performance in challenging underwater conditions.' },
+        { id: 7, type: 'dataset', title: 'MARIDA', url: 'https://zenodo.org/records/5151941', description: 'Satellite imagery (Sentinel-2) with pixel-level segmentation for large-scale marine debris.', env: 'Satellite' },
+        { id: 8, type: 'dataset', title: 'UAVVaste', url: 'https://github.com/PUTvision/UAVVaste', description: 'Aerial drone imagery for waste detection, providing a top-down perspective.', env: 'Aerial' }
     ];
 
     const resourceGrid = document.getElementById('resource-grid');
@@ -328,7 +328,14 @@ document.addEventListener('DOMContentLoaded', () => {
             card.className = 'resource-card bg-secondary p-6 rounded-lg shadow-lg content-card';
             card.innerHTML = `
                 <div class="flex justify-between items-start mb-2">
-                    <h4 class="text-xl font-bold text-accent">${resource.title}</h4>
+                    <h4 class="text-xl font-bold text-accent">
+                    ${resource.url ?
+                `<a href="${resource.url}" class="hover:underline" target="_blank" rel="noopener noreferrer">${resource.title}</a>` :
+                resource.title}
+
+
+
+                    </h4>
                     <span class="text-xs font-semibold ${resource.type === 'dataset' ? 'bg-blue-100 text-blue-800' : 'bg-green-100 text-green-800'} py-1 px-3 rounded-full">${resource.type}</span>
                 </div>
                 <p class="text-secondary">${resource.description}</p>
