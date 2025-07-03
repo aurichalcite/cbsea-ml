@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clear Blue Sea: An Interactive ML Proposal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Ocean Depths -->
+    <!-- Application Structure Plan: A single-page, narrative dashboard design. The structure guides the user from the high-level "why" (the Opportunity) to the "how" (Technical Vision, MLOps, Engagement Plan). This task-oriented flow, with a sticky top navigation, is chosen over a linear report format to make the dense, technical information more digestible and engaging. Users can explore sections based on their interests (e.g., a manager might focus on the Engagement Plan, while an engineer explores the Technical Vision). Interactive elements like clickable diagrams and filterable cards are used to transform static information into explorable content, enhancing understanding and retention. -->
+    <!-- Visualization & Content Choices: 
+        - The 'Autonomy Gap' (Inform/Compare): A side-by-side card layout using HTML/CSS to starkly contrast the current vs. future FRED state. Justification: A simple, powerful visual to establish the core problem instantly.
+        - Technical Vision (Organize/Inform): An interactive diagram of FRED built with HTML/CSS. Interaction: Clicking hotspots reveals detailed feature descriptions. Justification: Contextualizes technical features onto the physical robot, making the plan more tangible than a text list.
+        - MLOps "Data Flywheel" (Change/Organize): An animated flowchart using JS to highlight the data flow sequentially. Justification: Simplifies a complex, abstract process into an easy-to-follow visual narrative.
+        - Open-Source Resources (Organize/Compare): Data from tables is presented as a filterable grid of cards. Interaction: JS-powered buttons filter cards by category. Justification: Turns static tables into a dynamic, useful resource library. A Chart.js Donut chart summarizes dataset types.
+        - Engagement Plan (Change/Organize): An interactive, 3-step timeline/process diagram. Interaction: Clicking a phase expands its details. Justification: Clearly presents the path to collaboration in a structured, digestible format. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .bg-primary { background-color: #F0F4F8; }
+        .bg-secondary { background-color: #FFFFFF; }
+        .text-main { color: #102A43; }
+        .text-secondary { color: #334E68; }
+        .text-accent { color: #005B96; }
+        .border-accent { border-color: #005B96; }
+        .bg-accent { background-color: #005B96; }
+        .bg-accent-light { background-color: #B3DDF2; }
+        .nav-link { transition: color 0.3s ease, border-color 0.3s ease; }
+        .nav-link:hover { color: #005B96; border-bottom-color: #005B96; }
+        .active-link { color: #005B96; border-bottom-color: #005B96; font-weight: 600; }
+        .content-card { transition: transform 0.3s ease, box-shadow 0.3s ease; }
+        .content-card:hover { transform: translateY(-5px); box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1); }
+        .phase-content { max-height: 0; overflow: hidden; transition: max-height 0.5s ease-out; }
+        .phase-content.open { max-height: 500px; }
+        .chart-container { position: relative; width: 100%; max-width: 400px; margin-left: auto; margin-right: auto; height: 300px; max-height: 350px; }
+        .flow-item { transition: background-color 0.5s ease, border-color 0.5s ease; }
+        .flow-item.active { background-color: #B3DDF2; border-color: #005B96; }
+    </style>
+</head>
+<body class="bg-primary text-main">
+
+    <header id="header" class="bg-secondary/80 backdrop-blur-lg sticky top-0 z-50 shadow-md">
+        <nav class="container mx-auto px-6 py-3 flex justify-between items-center">
+            <h1 class="text-xl md:text-2xl font-bold text-accent">Clear Blue Sea: ML Proposal</h1>
+            <div class="hidden md:flex space-x-8">
+                <a href="#opportunity" class="nav-link pb-1 border-b-2 border-transparent">The Opportunity</a>
+                <a href="#vision" class="nav-link pb-1 border-b-2 border-transparent">Technical Vision</a>
+                <a href="#systems" class="nav-link pb-1 border-b-2 border-transparent">Sustainable Systems</a>
+                <a href="#leverage" class="nav-link pb-1 border-b-2 border-transparent">Open Source</a>
+                <a href="#plan" class="nav-link pb-1 border-b-2 border-transparent">Engagement Plan</a>
+            </div>
+            <button id="mobile-menu-button" class="md:hidden p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-accent">
+                <span class="text-2xl">☰</span>
+            </button>
+        </nav>
+        <div id="mobile-menu" class="hidden md:hidden">
+            <a href="#opportunity" class="block py-2 px-6 text-sm hover:bg-gray-200">The Opportunity</a>
+            <a href="#vision" class="block py-2 px-6 text-sm hover:bg-gray-200">Technical Vision</a>
+            <a href="#systems" class="block py-2 px-6 text-sm hover:bg-gray-200">Sustainable Systems</a>
+            <a href="#leverage" class="block py-2 px-6 text-sm hover:bg-gray-200">Open Source</a>
+            <a href="#plan" class="block py-2 px-6 text-sm hover:bg-gray-200">Engagement Plan</a>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-6 py-8 md:py-12">
+
+        <section id="opportunity" class="min-h-[80vh] flex items-center">
+            <div class="w-full">
+                <h2 class="text-3xl md:text-5xl font-bold text-center mb-4">Bridging the Autonomy Gap</h2>
+                <p class="text-lg md:text-xl text-secondary text-center max-w-3xl mx-auto mb-12">Clear Blue Sea's FRED initiative is poised for a technological leap. The challenge is evolving from a remotely operated tool into a fully autonomous, intelligent fleet. This proposal outlines a strategic plan to bridge that gap using computer vision and sustainable machine learning systems.</p>
+
+                <div class="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
+                    <div class="bg-secondary p-6 rounded-lg shadow-lg content-card">
+                        <h3 class="text-2xl font-bold text-accent mb-4">Current State: Remote Operation</h3>
+                        <p class="text-secondary mb-4">Prototypes are functional but rely on direct human control, operating in controlled environments like Mission Bay. Autonomy is limited to pre-programmed navigation.</p>
+                        <ul class="space-y-2 text-secondary">
+                            <li class="flex items-center"><span class="text-accent mr-3 text-2xl">●</span>Manually operated (e.g., Xbox controller)</li>
+                            <li class="flex items-center"><span class="text-accent mr-3 text-2xl">●</span>Simple video feed for human navigation</li>
+                            <li class="flex items-center"><span class="text-accent mr-3 text-2xl">●</span>Limited to collecting visible, nearby debris</li>
+                            <li class="flex items-center"><span class="text-accent mr-3 text-2xl">●</span>Requires constant human oversight</li>
+                        </ul>
+                    </div>
+                    <div class="bg-secondary p-6 rounded-lg shadow-lg content-card border-2 border-accent">
+                        <h3 class="text-2xl font-bold text-accent mb-4">Future Vision: Autonomous Swarms</h3>
+                        <p class="text-secondary mb-4">Fleets of large-scale FREDs operating 24/7 in the open ocean, making intelligent decisions with minimal human intervention. This requires a sophisticated perception system.</p>
+                        <ul class="space-y-2 text-secondary">
+                            <li class="flex items-center"><span class="text-green-500 mr-3 text-2xl">●</span>**Intelligent Debris Detection & Targeting**</li>
+                            <li class="flex items-center"><span class="text-green-500 mr-3 text-2xl">●</span>**Proactive Hazard & Marine Life Avoidance**</li>
+                            <li class="flex items-center"><span class="text-green-500 mr-3 text-2xl">●</span>**Collaborative Swarm Intelligence & Mapping**</li>
+                            <li class="flex items-center"><span class="text-green-500 mr-3 text-2xl">●</span>**Automated Data Collection for Science**</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="vision" class="py-16 md:py-24">
+            <h2 class="text-3xl md:text-5xl font-bold text-center mb-4">A Technical Vision for FRED</h2>
+            <p class="text-lg md:text-xl text-secondary text-center max-w-3xl mx-auto mb-12">This section details a concrete roadmap for integrating computer vision (CV) onto the FRED platform. The goal is to build an intelligent perception system, evolving from foundational detection to advanced, autonomous capabilities. Interact with the diagram below to explore the proposed features.</p>
+            <div class="grid lg:grid-cols-2 gap-12 items-center">
+                <div id="fred-diagram-container" class="relative w-full max-w-md mx-auto h-96 bg-secondary rounded-lg p-6 shadow-xl flex items-center justify-center">
+                    <div class="w-full h-full border-2 border-dashed border-gray-300 rounded-lg flex flex-col items-center justify-center relative">
+                         <div class="absolute top-4 text-center font-semibold text-secondary">FRED Platform</div>
+                         <div id="vision-hotspot-1" data-id="detection" class="vision-hotspot absolute top-1/4 left-1/4 w-32 h-16 bg-accent-light border-2 border-accent rounded-lg flex items-center justify-center text-center text-xs font-semibold cursor-pointer hover:bg-accent hover:text-white transition-all">Foundational Detection</div>
+                         <div id="vision-hotspot-2" data-id="segmentation" class="vision-hotspot absolute bottom-1/4 right-1/4 w-32 h-16 bg-accent-light border-2 border-accent rounded-lg flex items-center justify-center text-center text-xs font-semibold cursor-pointer hover:bg-accent hover:text-white transition-all">Advanced Perception</div>
+                         <div id="vision-hotspot-3" data-id="safety" class="vision-hotspot absolute top-1/2 left-8 w-32 h-16 bg-accent-light border-2 border-accent rounded-lg flex items-center justify-center text-center text-xs font-semibold cursor-pointer hover:bg-accent hover:text-white transition-all">Critical Safety</div>
+                         <div id="vision-hotspot-4" data-id="instrument" class="vision-hotspot absolute bottom-12 right-8 w-32 h-16 bg-accent-light border-2 border-accent rounded-lg flex items-center justify-center text-center text-xs font-semibold cursor-pointer hover:bg-accent hover:text-white transition-all">The "Uninvented Instrument"</div>
+                    </div>
+                </div>
+                <div id="vision-details" class="bg-secondary p-8 rounded-lg shadow-lg min-h-[24rem]">
+                    <h3 id="vision-title" class="text-2xl font-bold text-accent mb-4">Click a Feature to Learn More</h3>
+                    <p id="vision-description" class="text-secondary">Explore the proposed capabilities by clicking on the modules in the FRED diagram. Each feature builds upon the last, creating a comprehensive perception system.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="systems" class="py-16 md:py-24 bg-secondary -mx-6 px-6 rounded-xl">
+            <h2 class="text-3xl md:text-5xl font-bold text-center mb-4">Building a Sustainable System</h2>
+            <p class="text-lg md:text-xl text-secondary text-center max-w-3xl mx-auto mb-12">For a volunteer-run organization, robust automation is key. This MLOps (Machine Learning Operations) architecture is designed to be "volunteer-proof"—creating a system that grows and improves continuously with minimal manual intervention.</p>
+             <div class="max-w-4xl mx-auto">
+                <div id="flow-diagram" class="grid grid-cols-1 md:grid-cols-3 gap-4 items-center text-center">
+                    <div id="flow-1" class="flow-item p-4 border-2 border-gray-300 rounded-lg">
+                        <div class="text-4xl mb-2">🤖</div>
+                        <h4 class="font-bold">1. Data Capture</h4>
+                        <p class="text-sm text-secondary">FRED's onboard model intelligently captures images of debris and uploads them to the cloud.</p>
+                    </div>
+                     <div class="text-2xl font-bold text-gray-400 mx-auto transform md:rotate-0 rotate-90">→</div>
+                    <div id="flow-2" class="flow-item p-4 border-2 border-gray-300 rounded-lg">
+                        <div class="text-4xl mb-2">👤</div>
+                        <h4 class="font-bold">2. Volunteer Annotation</h4>
+                        <p class="text-sm text-secondary">Volunteers verify/correct model-suggested labels via a simple web interface, creating high-quality data.</p>
+                    </div>
+                     <div class="text-2xl font-bold text-gray-400 mx-auto transform md:rotate-0 rotate-90 hidden md:block">→</div>
+                     <div class="col-span-1 md:col-span-3 text-2xl font-bold text-gray-400 mx-auto transform rotate-90 md:-rotate-180">↓</div>
+                    <div id="flow-4" class="flow-item p-4 border-2 border-gray-300 rounded-lg md:col-start-3">
+                         <div class="text-4xl mb-2">🚀</div>
+                        <h4 class="font-bold">4. OTA Deployment</h4>
+                        <p class="text-sm text-secondary">The improved model is deployed over-the-air (OTA) to the entire FRED fleet, making them smarter.</p>
+                    </div>
+                    <div class="text-2xl font-bold text-gray-400 mx-auto transform md:rotate-180 rotate-90">←</div>
+                    <div id="flow-3" class="flow-item p-4 border-2 border-gray-300 rounded-lg">
+                        <div class="text-4xl mb-2">⚙️</div>
+                        <h4 class="font-bold">3. Automated Retraining</h4>
+                        <p class="text-sm text-secondary">New data automatically triggers a cloud-based process to retrain and validate a better model.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="leverage" class="py-16 md:py-24">
+            <h2 class="text-3xl md:text-5xl font-bold text-center mb-4">Leveraging the Open-Source Ecosystem</h2>
+            <p class="text-lg md:text-xl text-secondary text-center max-w-3xl mx-auto mb-12">We don't need to start from scratch. A rich ecosystem of open-source datasets and projects can dramatically accelerate development. Explore the resources below.</p>
+            
+            <div class="grid lg:grid-cols-3 gap-8">
+                <div class="lg:col-span-2">
+                    <div class="flex flex-wrap gap-2 mb-6 justify-center">
+                        <button class="filter-btn active-btn bg-accent text-white py-2 px-4 rounded-full" data-filter="all">All</button>
+                        <button class="filter-btn bg-white py-2 px-4 rounded-full" data-filter="dataset">Datasets</button>
+                        <button class="filter-btn bg-white py-2 px-4 rounded-full" data-filter="project">Projects</button>
+                    </div>
+                    <div id="resource-grid" class="grid md:grid-cols-2 gap-6">
+                    </div>
+                </div>
+                <div class="lg:col-span-1">
+                     <div class="bg-secondary p-6 rounded-lg shadow-lg sticky top-24">
+                        <h3 class="text-xl font-bold text-accent mb-4 text-center">Dataset Environments</h3>
+                        <p class="text-sm text-secondary text-center mb-4">Public datasets cover a wide range of environments, providing a diverse foundation for the initial model.</p>
+                        <div class="chart-container">
+                            <canvas id="datasetChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </section>
+
+        <section id="plan" class="py-16 md:py-24 bg-secondary -mx-6 px-6 rounded-xl">
+             <h2 class="text-3xl md:text-5xl font-bold text-center mb-4">A Phased Engagement Plan</h2>
+             <p class="text-lg md:text-xl text-secondary text-center max-w-3xl mx-auto mb-12">This three-phase plan ensures incremental value, building from a quick-win proof-of-concept to a fully deployed, advanced R&D system. Click each phase to expand.</p>
+             <div class="max-w-4xl mx-auto space-y-4">
+                 <div class="phase-container border border-gray-200 rounded-lg">
+                     <button class="phase-header w-full text-left p-6 flex justify-between items-center bg-gray-50 hover:bg-gray-100">
+                         <div class="flex items-center">
+                             <span class="text-2xl font-bold text-accent mr-4">1</span>
+                             <div>
+                                 <h3 class="text-xl font-semibold">Proof of Concept</h3>
+                                 <p class="text-sm text-secondary">Timeline: 1-3 Months</p>
+                             </div>
+                         </div>
+                         <span class="phase-arrow text-2xl font-bold text-accent">▼</span>
+                     </button>
+                     <div class="phase-content p-6 border-t border-gray-200">
+                         <p class="text-secondary mb-4"><strong>Objective:</strong> Quickly demonstrate feasibility and build trust. Develop a baseline debris detection model and showcase it in a simple, interactive web demo for CBS stakeholders.</p>
+                         <p class="text-secondary"><strong>Key Activities:</strong> Aggregate public datasets, fine-tune a YOLOv8 model, build a Streamlit/Flask demo app.</p>
+                     </div>
+                 </div>
+                 <div class="phase-container border border-gray-200 rounded-lg">
+                     <button class="phase-header w-full text-left p-6 flex justify-between items-center bg-gray-50 hover:bg-gray-100">
+                         <div class="flex items-center">
+                             <span class="text-2xl font-bold text-accent mr-4">2</span>
+                             <div>
+                                 <h3 class="text-xl font-semibold">Foundational MLOps Pipeline</h3>
+                                 <p class="text-sm text-secondary">Timeline: 3-9 Months</p>
+                             </div>
+                         </div>
+                         <span class="phase-arrow text-2xl font-bold text-accent">▶</span>
+                     </button>
+                     <div class="phase-content p-6 border-t border-gray-200">
+                         <p class="text-secondary mb-4"><strong>Objective:</strong> Build the sustainable, automated infrastructure for all future ML work. Implement the "Data Flywheel" and CI/CD pipeline.</p>
+                         <p class="text-secondary"><strong>Key Activities:</strong> Set up cloud data storage, build the volunteer annotation tool, configure a CI/CD pipeline (e.g., GitHub Actions) for automated model training and validation.</p>
+                     </div>
+                 </div>
+                 <div class="phase-container border border-gray-200 rounded-lg">
+                     <button class="phase-header w-full text-left p-6 flex justify-between items-center bg-gray-50 hover:bg-gray-100">
+                         <div class="flex items-center">
+                             <span class="text-2xl font-bold text-accent mr-4">3</span>
+                             <div>
+                                 <h3 class="text-xl font-semibold">Advanced R&D & Deployment</h3>
+                                 <p class="text-sm text-secondary">Timeline: 9+ Months</p>
+                             </div>
+                         </div>
+                         <span class="phase-arrow text-2xl font-bold text-accent">▶</span>
+                     </button>
+                     <div class="phase-content p-6 border-t border-gray-200">
+                         <p class="text-secondary mb-4"><strong>Objective:</strong> Deploy models to the FRED fleet and tackle high-impact research goals to realize the full autonomous vision.</p>
+                         <p class="text-secondary"><strong>Key Activities:</strong> Optimize and deploy models to FRED's onboard computer. Implement ghost net avoidance. Begin R&D on the "uninvented instrument" for plastic density mapping and research swarm intelligence concepts (C-SLAM).</p>
+                     </div>
+                 </div>
+             </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-secondary mt-16">
+        <div class="container mx-auto px-6 py-8 text-center text-secondary">
+            <p>This interactive proposal was generated to support Clear Blue Sea's mission.</p>
+            <p class="text-sm mt-2">A Strategic Analysis and Technical Proposal for Machine Learning Integration.</p>
+        </div>
+    </footer>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+
+    const visionData = {
+        'detection': {
+            title: 'Foundational Debris Detection',
+            description: 'The first step is to deploy a lightweight, real-time object detection model (like YOLOv8 or EfficientDet) on FRED\'s onboard computer. This model will identify and classify debris, providing the foundational data for all other autonomous functions and fulfilling the core need to assess debris density.'
+        },
+        'segmentation': {
+            title: 'Advanced Perception & Characterization',
+            description: 'By moving from bounding boxes to pixel-perfect instance segmentation, FRED gains a much richer understanding of the environment. This allows for accurate size/volume estimation, better differentiation between plastic and organic matter, and the ability to identify and avoid marine life.'
+        },
+        'safety': {
+            title: 'Critical Safety: Hazard Avoidance',
+            description: 'A high-priority "entanglement hazard" class (nets, ropes) is added to the model. When detected, it triggers an immediate, autonomous avoidance maneuver via an API to the robot\'s control system (e.g., ROS). This is a prerequisite for safe, long-term open-ocean deployment.'
+        },
+        'instrument': {
+            title: 'The "Uninvented Instrument"',
+            description: 'This is the most ambitious goal: creating the sensor CBS needs not with hardware, but with ML. A multi-modal model will fuse video data with other sensor readings to generate a real-time "plastic pollution score," allowing FRED to actively hunt for pollution hotspots instead of collecting randomly.'
+        }
+    };
+
+    const visionHotspots = document.querySelectorAll('.vision-hotspot');
+    const visionTitle = document.getElementById('vision-title');
+    const visionDescription = document.getElementById('vision-description');
+    
+    visionHotspots.forEach(hotspot => {
+        hotspot.addEventListener('click', () => {
+            const dataId = hotspot.dataset.id;
+            const content = visionData[dataId];
+            visionTitle.textContent = content.title;
+            visionDescription.textContent = content.description;
+            visionHotspots.forEach(h => h.classList.remove('bg-accent', 'text-white'));
+            hotspot.classList.add('bg-accent', 'text-white');
+        });
+    });
+
+    const flowDiagram = document.getElementById('flow-diagram');
+    const flowItems = document.querySelectorAll('.flow-item');
+    let flowIndex = 0;
+    
+    const animateFlow = () => {
+        flowItems.forEach(item => item.classList.remove('active'));
+        if(flowIndex < flowItems.length) {
+            document.getElementById(`flow-${flowIndex + 1}`).classList.add('active');
+            flowIndex++;
+        } else {
+            flowIndex = 0;
+        }
+    };
+    
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                flowIndex = 0;
+                setInterval(animateFlow, 1500);
+            }
+        });
+    }, { threshold: 0.5 });
+    
+    if(flowDiagram) {
+        observer.observe(flowDiagram);
+    }
+
+    const resources = [
+        { id: 1, type: 'dataset', title: 'TACO', description: 'Large dataset for trash annotations in various contexts, both terrestrial and coastal. Includes segmentation.', env: 'Coastal' },
+        { id: 2, type: 'dataset', title: 'Trash-ICRA19', description: 'Underwater imagery with bounding boxes for trash, ROVs, and biological objects.', env: 'Underwater' },
+        { id: 3, type: 'project', title: 'DebrisScan', description: 'An end-to-end system using EfficientDet with a REST API and Dockerized deployment. Great MLOps model.' },
+        { id: 4, type: 'dataset', title: 'Seaclear Marine Debris', description: 'Extensive underwater dataset with segmentation for 40 categories of litter and marine life.', env: 'Underwater' },
+        { id: 5, type: 'project', title: 'Trash_Track', description: 'Uses zero-shot models like Grounding DINO to detect trash without specific training labels. Highly flexible.' },
+        { id: 6, type: 'project', title: 'Underwater Waste Detection', description: 'Combines YOLOv8 with image enhancement techniques (Dark Channel Prior) to improve performance in challenging underwater conditions.' },
+        { id: 7, type: 'dataset', title: 'MARIDA', description: 'Satellite imagery (Sentinel-2) with pixel-level segmentation for large-scale marine debris.', env: 'Satellite' },
+        { id: 8, type: 'dataset', title: 'UAVVaste', description: 'Aerial drone imagery for waste detection, providing a top-down perspective.', env: 'Aerial' }
+    ];
+
+    const resourceGrid = document.getElementById('resource-grid');
+    const filterBtns = document.querySelectorAll('.filter-btn');
+
+    const displayResources = (filter = 'all') => {
+        resourceGrid.innerHTML = '';
+        const filteredResources = (filter === 'all') ? resources : resources.filter(r => r.type === filter);
+        
+        filteredResources.forEach(resource => {
+            const card = document.createElement('div');
+            card.className = 'resource-card bg-secondary p-6 rounded-lg shadow-lg content-card';
+            card.innerHTML = `
+                <div class="flex justify-between items-start mb-2">
+                    <h4 class="text-xl font-bold text-accent">${resource.title}</h4>
+                    <span class="text-xs font-semibold ${resource.type === 'dataset' ? 'bg-blue-100 text-blue-800' : 'bg-green-100 text-green-800'} py-1 px-3 rounded-full">${resource.type}</span>
+                </div>
+                <p class="text-secondary">${resource.description}</p>
+            `;
+            resourceGrid.appendChild(card);
+        });
+    };
+
+    filterBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            const filter = btn.dataset.filter;
+            filterBtns.forEach(b => b.classList.remove('active-btn', 'bg-accent', 'text-white'));
+            btn.classList.add('active-btn', 'bg-accent', 'text-white');
+            displayResources(filter);
+        });
+    });
+
+    displayResources();
+    
+    const datasetChartCtx = document.getElementById('datasetChart').getContext('2d');
+    const datasetEnvironments = resources.filter(r => r.type === 'dataset').reduce((acc, curr) => {
+        acc[curr.env] = (acc[curr.env] || 0) + 1;
+        return acc;
+    }, {});
+    
+    new Chart(datasetChartCtx, {
+        type: 'doughnut',
+        data: {
+            labels: Object.keys(datasetEnvironments),
+            datasets: [{
+                label: 'Dataset Environments',
+                data: Object.values(datasetEnvironments),
+                backgroundColor: ['#005B96', '#66A5AD', '#B3DDF2', '#07575B'],
+                borderColor: '#FFFFFF',
+                borderWidth: 2
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            let label = context.label || '';
+                            if (label) {
+                                label += ': ';
+                            }
+                            if (context.parsed !== null) {
+                                label += context.parsed;
+                            }
+                            return label;
+                        }
+                    }
+                }
+            }
+        }
+    });
+
+    const phaseHeaders = document.querySelectorAll('.phase-header');
+    phaseHeaders.forEach(header => {
+        header.addEventListener('click', () => {
+            const content = header.nextElementSibling;
+            const arrow = header.querySelector('.phase-arrow');
+            const isOpen = content.classList.contains('open');
+            
+            document.querySelectorAll('.phase-content').forEach(c => c.classList.remove('open'));
+            document.querySelectorAll('.phase-arrow').forEach(a => a.textContent = '▶');
+            
+            if (!isOpen) {
+                content.classList.add('open');
+                arrow.textContent = '▼';
+            }
+        });
+    });
+
+    const mobileMenuButton = document.getElementById('mobile-menu-button');
+    const mobileMenu = document.getElementById('mobile-menu');
+    mobileMenuButton.addEventListener('click', () => {
+        mobileMenu.classList.toggle('hidden');
+    });
+
+    mobileMenu.addEventListener('click', (e) => {
+        if(e.target.tagName === 'A') {
+            mobileMenu.classList.add('hidden');
+        }
+    });
+
+    const navLinks = document.querySelectorAll('nav a');
+    const sections = document.querySelectorAll('main section');
+    window.addEventListener('scroll', () => {
+        let current = '';
+        sections.forEach(section => {
+            const sectionTop = section.offsetTop;
+            if (pageYOffset >= sectionTop - 60) {
+                current = section.getAttribute('id');
+            }
+        });
+
+        navLinks.forEach(link => {
+            link.classList.remove('active-link');
+            if (link.getAttribute('href').includes(current)) {
+                link.classList.add('active-link');
+            }
+        });
+    });
+
+});
+</script>
+
+</body>
+</html>
